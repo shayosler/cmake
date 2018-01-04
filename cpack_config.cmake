@@ -1,0 +1,30 @@
+if (UNIX)
+  INCLUDE(InstallRequiredSystemLibraries)
+  SET(CPACK_SET_DESTDIR "on")
+  SET(CPACK_PACKAGE_NAME ${CMAKE_PROJECT_NAME})
+  SET(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+  SET(CPACK_DEBIAN_PACKAGE_SECTION "SNO")
+  SET(CPACK_PACKAGE_VENDOR "Shay Osler")
+  SET(CPACK_PACKAGE_CONTACT "iwishiwuzskiing@gmail.com")
+  SET(CPACK_INCLUDE_TOPLEVEL_DIRECTORY 0)
+  SET(CPACK_PACKAGING_INSTALL_PREFIX "/")
+  SET(CPACK_GENERATOR "DEB")
+  SET(CPACK_COMPONENTS_ALL Libraries ApplicationData)
+
+  # CPACK package don't generate the correct debian names so
+  # we have to do this ...
+  # http://cmake.3232098.n2.nabble.com/CPack-DEB-default-to-standard-Debian-package-file-names-td5321486.html
+  string(TOLOWER "${CPACK_PACKAGE_NAME}" CPACK_PACKAGE_NAME_LOWERCASE)
+  find_program(DPKG_PROGRAM dpkg DOC "dpkg program of Debian-based systems")
+  if(DPKG_PROGRAM)
+    execute_process(
+      COMMAND ${DPKG_PROGRAM} --print-architecture
+      OUTPUT_VARIABLE CPACK_DEBIAN_PACKAGE_ARCHITECTURE
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+    set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}_${PROJECT_VERSION}_${CPACK_DEBIAN_PACKAGE_ARCHITECTURE}")
+  else(DPKG_PROGRAM)
+    set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME_LOWERCASE}_${PROJECT_VERSION}_${CMAKE_SYSTEM_NAME}")
+  endif(DPKG_PROGRAM)
+  INCLUDE(CPack)
+endif (UNIX)
