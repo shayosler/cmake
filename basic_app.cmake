@@ -1,19 +1,21 @@
 # Simple CMakeLists.txt file for basic applications. Builds executable from all 
 # of the files in the ./src directory
+
 ######################################
 # User settable flags
+# enable with cmake -DTESTS=ON
+option(TESTS "Build all tests" OFF)
 
 ######################################
 # Define platform specific paths
 if (UNIX)
   #nothing to set for UNIX right now
+  set(cmake_dir "/home/shay/development/cmake")
 endif (UNIX)
 if (WIN32)
-  #set(BOOST_ROOT "C:/Users/greensea/depends/boost_1_55_0" CACHE STRING "Boost root directory")
-  #set(BOOST_LIBRARYDIR "C:/Users/greensea/depends/boost_1_55_0/stage/lib/" CACHE STRING "Boost library directory")
-  set(BOOST_ROOT "C:/Boost" CACHE STRING "Boost root directory")
-  #set(BOOST_LIBRARYDIR "C:/Users/greensea/depends/boost_1_55_0/stage/lib/" CACHE STRING "Boost library directory")
+  #If things ever go to windows, define path to cmake stuff
 endif (WIN32)
+include(${cmake_dir}/paths-config.cmake)
 
 ######################################
 # Things to be included for CMake
@@ -38,26 +40,11 @@ set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 configure_file("${cmake_dir}/config.h.in" 
                 "${PROJECT_SOURCE_DIR}/src/config.h")
 
-######################################
-## Build flags
-#If a build type hasn't been defined, use Release
-if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE Release)
-endif(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-
-#Set flags for different build modes
-if(CMAKE_COMPILER_IS_GNUCC)
-  set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Wno-long-long -std=c++11")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-  set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")  #todo: -Og? instead of 00?
-  MESSAGE(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-endif(CMAKE_COMPILER_IS_GNUCC)
 
 ######################################
 ## Find 3rd party sources/libs
 #Boost
-find_package( Boost 1.55 COMPONENTS thread system program_options atomic filesystem REQUIRED )
+find_package( Boost 1.62 COMPONENTS thread system program_options atomic filesystem REQUIRED )
 IF (NOT Boost_FOUND)
   message(FATAL_ERROR "Could not find boost")
 ENDIF()
@@ -82,6 +69,10 @@ include_directories( ${Boost_INCLUDE_DIR} )
 add_executable(${project_name} ${sources} ${headers})
 
 ######################################
+## Build flags
+include(${cmake_dir}/cxxflags-config.cmake)
+
+######################################
 ## Linking
 #Boost
 set(libs ${libs} ${Boost_LIBRARIES})
@@ -99,4 +90,14 @@ install(TARGETS ${project_name} DESTINATION bin)
 ######################################
 # .deb package generation
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libsno") # todo, automate
-include(${cmake_dir}/cpack_config.cmake)
+include(${cmake_dir}/cpack-config.cmake)
+
+######################################
+# Unit Testing
+if (UNIX AND TESTS)
+  #Set files needed for testing
+  set(TEST_SOURCES ${TEST_SOURCES} ${sources})
+  set(TEST_HEADERS ${TEST_HEADERS} ${headers})
+  set(TEST_LIBS ${TEST_LIBS} ${libs})
+  include(${cmake_dir}/gtest-config.cmake)
+endif(UNIX AND TESTS)

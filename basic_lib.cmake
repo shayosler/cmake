@@ -1,20 +1,26 @@
 # Simple CMakeLists.txt file for basic Libraries. Builds libraris from all 
 # of the files in the ./src and ./include directories. Binary will be installed
-# to /usr/local/lib. Headers will be installed to /usr/local/include/${lib_name}
+# to /usr/local/lib. Headers will be installed to /usr/local/include/${project_name}
+#
+# Before including this file the following variables should be defined
+#  project_name    The name of the project
+#  lib_name        The name of the library to create
+
 ######################################
 # User settable flags
+# enable with cmake -DTESTS=ON
+option(TESTS "Build all tests" OFF)
 
 ######################################
 # Define platform specific paths
 if (UNIX)
   #nothing to set for UNIX right now
+  set(cmake_dir "/home/shay/development/cmake")
 endif (UNIX)
 if (WIN32)
-  #set(BOOST_ROOT "C:/Users/greensea/depends/boost_1_55_0" CACHE STRING "Boost root directory")
-  #set(BOOST_LIBRARYDIR "C:/Users/greensea/depends/boost_1_55_0/stage/lib/" CACHE STRING "Boost library directory")
-  set(BOOST_ROOT "C:/Boost" CACHE STRING "Boost root directory")
-  #set(BOOST_LIBRARYDIR "C:/Users/greensea/depends/boost_1_55_0/stage/lib/" CACHE STRING "Boost library directory")
+  #If things ever go to windows, define path to cmake stuff
 endif (WIN32)
+include(${cmake_dir}/paths-config.cmake)
 
 ######################################
 # Things to be included for CMake
@@ -22,16 +28,16 @@ set(CMAKE_MODULE_PATH ${cmake_dir}/cmake-modules)
 
 ######################################
 ## Define the project
-project(${project_name})
+project(${lib_name})
 
 ######################################
 # Versioning
 set(VERSION_MAJOR 0)
 set(VERSION_MINOR 1)
 set(VERSION_PATCH 0)
-set(${project_name}_VERSION_MAJOR ${VERSION_MAJOR})
-set(${project_name}_VERSION_MINOR ${VERSION_MINOR})
-set(${project_name}_VERSION_PATCH ${VERSION_PATCH})
+set(${lib_name}_VERSION_MAJOR ${VERSION_MAJOR})
+set(${lib_name}_VERSION_MINOR ${VERSION_MINOR})
+set(${lib_name}_VERSION_PATCH ${VERSION_PATCH})
 set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 
 ######################################
@@ -40,25 +46,9 @@ configure_file("${cmake_dir}/config.h.in"
                 "${PROJECT_SOURCE_DIR}/src/config.h")
 
 ######################################
-## Build flags
-#If a build type hasn't been defined, use RelWithDebInfo
-if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-   set(CMAKE_BUILD_TYPE RelWithDebInfo)
-endif(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-
-#Set flags for different build modes
-if(CMAKE_COMPILER_IS_GNUCC)
-  set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic -Wno-long-long -std=c++11")
-  set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g")
-  set(CMAKE_CXX_FLAGS_RELEASE "-O3")
-  set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")  #todo: -Og? instead of 00?
-  MESSAGE(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
-endif(CMAKE_COMPILER_IS_GNUCC)
-
-######################################
 ## Find 3rd party sources/libs
 #Boost
-find_package( Boost 1.55 COMPONENTS thread system program_options atomic filesystem REQUIRED )
+find_package( Boost 1.63 COMPONENTS thread system program_options atomic filesystem REQUIRED )
 IF (NOT Boost_FOUND)
   message(FATAL_ERROR "Could not find boost")
 ENDIF()
@@ -69,7 +59,7 @@ ENDIF()
 file(GLOB headers include/[a-z]*.h)
 file(GLOB sources src/[a-z]*.cpp)
 
-######################
+######################################
 ## Include paths
 #Local header locations
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -80,27 +70,42 @@ include_directories( ${Boost_INCLUDE_DIR} )
 ######################################
 ## Define Binaries
 #Define the library we're building
-add_library(${lib_name} SHARED ${sources} ${headers})
+add_library(${project_name} SHARED ${sources} ${headers})
+
+######################################
+## Build flags
+include(${cmake_dir}/cxxflags-config.cmake)
 
 #################################
 ## Linking
 set(libs ${libs} ${Boost_LIBRARIES})
-target_link_libraries(${lib_name} ${libs})
+target_link_libraries(${project_name} ${libs})
 
 #################################
 ## Installation
 #Library installation
-set(_library_dir lib)
-set(LIB_INSTALL_DIR ${_library_dir}${LIB_SUFFIX})
-install(TARGETS ${lib_name}
-	      LIBRARY DESTINATION ${LIB_INSTALL_DIR}
-	      ARCHIVE DESTINATION lib${LIB_SUFFIX})
-#Header installation
-set(INCLUDE_INSTALL_DIR include/${lib_name})
-install(FILES ${headers} DESTINATION ${INCLUDE_INSTALL_DIR})
+set(library_install_dir lib)
+set(include_install_dir include/${project_name})
+set(install_destinations
+    RUNTIME DESTINATION bin
+    LIBRARY DESTINATION ${library_install_dir}
+    ARCHIVE DESTINATION ${library_install_dir})
 
+#Header 
+install(TARGETS ${project_name} COMPONENT lib ${install_destinations})
+install(FILES ${headers} DESTINATION ${include_install_dir})
 
 ######################################
 # .deb package generation
 SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libsno") # todo, automate
-include(${cmake_dir}/cpack_config.cmake)
+include(${cmake_dir}/cpack-config.cmake)
+
+######################################
+# Unit Testing
+if (UNIX AND TESTS)
+  #Set files needed for testing
+  set(TEST_SOURCES ${TEST_SOURCES} ${sources})
+  set(TEST_HEADERS ${TEST_HEADERS} ${headers})
+  set(TEST_LIBS ${TEST_LIBS} ${libs})
+  include(${cmake_dir}/gtest-config.cmake)
+endif(UNIX AND TESTS)
