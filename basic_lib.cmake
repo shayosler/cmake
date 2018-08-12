@@ -28,6 +28,7 @@ set(CMAKE_MODULE_PATH ${cmake_dir}/cmake-modules)
 
 ######################################
 ## Define the project
+set(lib_name lib${project_name})
 project(${lib_name})
 
 ######################################
@@ -43,12 +44,12 @@ set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
 ######################################
 #Configure a header file to pass some of the CMake settings to the source code
 configure_file("${cmake_dir}/config.h.in" 
-                "${PROJECT_SOURCE_DIR}/src/config.h")
+                "${PROJECT_SOURCE_DIR}/include/config.h")
 
 ######################################
 ## Find 3rd party sources/libs
 #Boost
-find_package( Boost 1.63 COMPONENTS thread system program_options atomic filesystem REQUIRED )
+find_package( Boost 1.62 COMPONENTS thread system program_options atomic filesystem REQUIRED )
 IF (NOT Boost_FOUND)
   message(FATAL_ERROR "Could not find boost")
 ENDIF()
@@ -56,13 +57,15 @@ ENDIF()
 ######################################
 ## Source files
 #Grab all the files in the src/ directory
-file(GLOB headers include/[a-z]*.h)
-file(GLOB sources src/[a-z]*.cpp)
+file(GLOB public_headers public/[a-zA-Z]*.h)
+file(GLOB headers include/[a-zA-Z]*.h)
+file(GLOB sources src/[a-zA-Z]*.cpp)
 
 ######################################
 ## Include paths
 #Local header locations
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/public)
 
 #Boost headers
 include_directories( ${Boost_INCLUDE_DIR} )
@@ -70,12 +73,13 @@ include_directories( ${Boost_INCLUDE_DIR} )
 ######################################
 ## Define Binaries
 #Define the library we're building
-add_library(${project_name} SHARED ${sources} ${headers})
+add_library(${project_name} SHARED ${sources} ${headers} ${public_headers})
 
 ######################################
 ## Build flags
+set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 include(${cmake_dir}/cxxflags-config.cmake)
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-z,defs")
 #################################
 ## Linking
 set(libs ${libs} ${Boost_LIBRARIES})
@@ -93,11 +97,11 @@ set(install_destinations
 
 #Header 
 install(TARGETS ${project_name} COMPONENT lib ${install_destinations})
-install(FILES ${headers} DESTINATION ${include_install_dir})
+install(FILES ${public_headers} DESTINATION ${include_install_dir})
 
 ######################################
 # .deb package generation
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libsno") # todo, automate
+set(deps ${deps} "libboost-thread (>=1.62), libboost-system (>=1.62), libboost-program_options (>=1.62), libboost-atomic (>=1.62), libboost-filesystem (>=1.62)")
 include(${cmake_dir}/cpack-config.cmake)
 
 ######################################

@@ -52,8 +52,8 @@ ENDIF()
 ######################################
 ## Source files in our project
 #Grab all the files in the src/ directory
-file(GLOB headers src/[a-z]*.h)
-file(GLOB sources src/[a-z]*.cpp)
+file(GLOB_RECURSE headers src/[a-z]*.h)
+file(GLOB_RECURSE sources src/[a-z]*.cpp)
 
 ######################################
 ## Include paths
@@ -70,17 +70,18 @@ add_executable(${project_name} ${sources} ${headers})
 
 ######################################
 ## Build flags
+set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 include(${cmake_dir}/cxxflags-config.cmake)
 
 ######################################
 ## Linking
-#Boost
+# Boost
 set(libs ${libs} ${Boost_LIBRARIES})
 
-#libsno
+# libsno
 set(libs ${libs} sno)
 
-#Boost
+# Link
 target_link_libraries(${project_name} ${libs})
 
 ######################################
@@ -89,7 +90,7 @@ install(TARGETS ${project_name} DESTINATION bin)
 
 ######################################
 # .deb package generation
-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libsno") # todo, automate
+SET(deps ${deps} "libsno") # todo, automate
 include(${cmake_dir}/cpack-config.cmake)
 
 ######################################
