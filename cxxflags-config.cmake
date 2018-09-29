@@ -10,7 +10,7 @@ endif(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 #Turn on verbose compiler warnings, set flags for different build modes
 if(CMAKE_COMPILER_IS_GNUCC)
   set(CMAKE_CXX_STANDARD 14)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wpedantic -Wno-long-long -Wunused -Wconversion -Wsign-conversion -Woverloaded-virtual -Wold-style-cast")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-long-long -Wunused -Wconversion -Wsign-conversion")# -Woverloaded-virtual -Wold-style-cast")
   set(CMAKE_CXX_FLAGS_RELWITHDEBINFO "-O3 -g")
   set(CMAKE_CXX_FLAGS_RELEASE "-O3")
   set(CMAKE_CXX_FLAGS_DEBUG  "-O0 -g")

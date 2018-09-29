@@ -33,13 +33,8 @@ project(${lib_name})
 
 ######################################
 # Versioning
-set(VERSION_MAJOR 0)
-set(VERSION_MINOR 1)
-set(VERSION_PATCH 0)
-set(${lib_name}_VERSION_MAJOR ${VERSION_MAJOR})
-set(${lib_name}_VERSION_MINOR ${VERSION_MINOR})
-set(${lib_name}_VERSION_PATCH ${VERSION_PATCH})
-set(PROJECT_VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH})
+set(version_header_dir ${project_name})
+include(${cmake_dir}/version.cmake)
 
 ######################################
 #Configure a header file to pass some of the CMake settings to the source code
@@ -56,18 +51,17 @@ ENDIF()
 
 ######################################
 ## Source files
-#Grab all the files in the src/ directory
-file(GLOB public_headers public/[a-zA-Z]*.h)
+file(GLOB public_headers ${project_name}/[a-zA-Z]*.h)
 file(GLOB headers include/[a-zA-Z]*.h)
 file(GLOB sources src/[a-zA-Z]*.cpp)
 
 ######################################
 ## Include paths
-#Local header locations
+# Local header locations
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-#Boost headers
+# Boost headers
 include_directories( ${Boost_INCLUDE_DIR} )
 
 ######################################
@@ -101,7 +95,7 @@ install(FILES ${public_headers} DESTINATION ${include_install_dir})
 
 ######################################
 # .deb package generation
-set(deps ${deps} "libboost-thread (>=1.62), libboost-system (>=1.62), libboost-program_options (>=1.62), libboost-atomic (>=1.62), libboost-filesystem (>=1.62)")
+set(deps ${deps} "libboost-thread1.62.0, libboost-system1.62.0, libboost-program-options1.62.0, libboost-atomic1.62.0, libboost-filesystem1.62.0")
 include(${cmake_dir}/cpack-config.cmake)
 
 ######################################

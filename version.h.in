@@ -1,0 +1,29 @@
+#ifdef ${project_upper}_MAJOR
+#undef ${project_upper}_MAJOR
+#endif
+#define ${project_upper}_MAJOR ${PROJECT_VERSION_MAJOR}
+
+#ifdef ${project_upper}_MINOR
+#undef ${project_upper}_MINOR
+#endif
+#define ${project_upper}_MINOR ${PROJECT_VERSION_MINOR}
+
+#ifdef ${project_upper}_PATCH
+#undef ${project_upper}_PATCH
+#endif
+#define ${project_upper}_PATCH ${PROJECT_VERSION_PATCH}
+
+#ifdef VERSION_MAJOR
+#undef VERSION_MAJOR
+#endif
+#define VERSION_MAJOR ${PROJECT_VERSION_MAJOR}
+
+#ifdef VERSION_MINOR
+#undef VERSION_MINOR
+#endif
+#define VERSION_MINOR ${PROJECT_VERSION_MINOR}
+
+#ifdef VERSION_PATCH
+#undef VERSION_PATCH
+#endif
+#define VERSION_PATCH ${PROJECT_VERSION_PATCH}

@@ -37,7 +37,7 @@ get_target_property(PROJ_LIBS ${project_name} LINK_LIBRARIES)
 
 #Add the google testing files.
 if(NOT DEFINED GTEST_ROOT)
-  set(GTEST_ROOT "/usr/local/src/gtest-1.8.0")
+  set(GTEST_ROOT "/usr/local/src/googletest-release-1.8.0")
 endif(NOT DEFINED GTEST_ROOT)
 message(STATUS "Using gtest from ${GTEST_ROOT}")
 
