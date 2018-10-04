@@ -1,5 +1,5 @@
 #!/bin/bash
-cmake_dir=/usr/local/share/cmake/gss_cmake/so_cmake
+cmake_dir=/usr/local/share/cmake/so_cmake
 bin_dir=/usr/local/bin/
 
 [ -d /usr/local/share/cmake ] || mkdir /usr/local/share/cmake/
