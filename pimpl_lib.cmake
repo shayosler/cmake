@@ -15,7 +15,7 @@ option(TESTS "Build all tests" OFF)
 # Define platform specific paths
 if (UNIX)
   #nothing to set for UNIX right now
-  set(cmake_dir "/home/shay/development/cmake")
+  set(cmake_dir "/usr/local/bin/cmake/so_cmake")
 endif (UNIX)
 if (WIN32)
   #If things ever go to windows, define path to cmake stuff
@@ -34,7 +34,7 @@ project(${lib_name})
 ######################################
 # Versioning
 set(version_header_dir ${project_name})
-include(${cmake_dir}/version.cmake)
+include(${cmake_dir}/setversion.cmake)
 
 ######################################
 #Configure a header file to pass some of the CMake settings to the source code

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -ex
 # Get the cmake version
 dir=$1
 if [[ -z "$dir" ]]
@@ -12,5 +12,5 @@ then
 fi
 
 # Location of cmake files
-cmake_dir=/home/shay/development/cmake
+cmake_dir=/usr/local/share/cmake/so_cmake
 cmake -DVERSION_DIR="$dir" -P $cmake_dir/get_version.cmake 2>&1

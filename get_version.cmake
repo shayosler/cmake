@@ -1,7 +1,7 @@
 # CMake script to print out the current version. Requires a file called 'version.cmake'
 # to be present
 # Invoke with:
-# cmake -DVERSION_DIR=/path/to/dir/containing/version/file/ -P /path/to/gss_getversion.cmake 2>&1
+# cmake -DVERSION_DIR=/path/to/dir/containing/version/file/ -P /path/to/get_version.cmake 2>&1
 include(${VERSION_DIR}/version.cmake)
 
 # Determine if commit is a tagged release, non-zero return code means not tagged
