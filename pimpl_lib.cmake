@@ -51,9 +51,9 @@ ENDIF()
 
 ######################################
 ## Source files
-file(GLOB public_headers ${project_name}/[a-zA-Z]*.h)
-file(GLOB headers include/[a-zA-Z]*.h)
-file(GLOB sources src/[a-zA-Z]*.cpp)
+file(GLOB_RECURSE public_headers ${project_name}/[a-zA-Z]*.h)
+file(GLOB_RECURSE headers include/[a-zA-Z]*.h)
+file(GLOB_RECURSE sources src/[a-zA-Z]*.cpp)
 
 ######################################
 ## Include paths
