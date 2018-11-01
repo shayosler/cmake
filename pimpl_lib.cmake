@@ -74,6 +74,7 @@ add_library(${project_name} SHARED ${sources} ${headers} ${public_headers})
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 include(${cmake_dir}/cxxflags-config.cmake)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-z,defs")
+
 #################################
 ## Linking
 set(libs ${libs} ${Boost_LIBRARIES})
@@ -83,7 +84,7 @@ target_link_libraries(${project_name} ${libs})
 ## Installation
 #Library installation
 set(library_install_dir lib)
-set(include_install_dir include/${project_name})
+set(include_install_dir include)
 set(install_destinations
     RUNTIME DESTINATION bin
     LIBRARY DESTINATION ${library_install_dir}
@@ -91,7 +92,9 @@ set(install_destinations
 
 #Header 
 install(TARGETS ${project_name} COMPONENT lib ${install_destinations})
-install(FILES ${public_headers} DESTINATION ${include_install_dir})
+install(DIRECTORY ${project_name}
+        DESTINATION ${include_install_dir}
+        FILES_MATCHING PATTERN "*.h")
 
 ######################################
 # .deb package generation
