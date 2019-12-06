@@ -25,11 +25,11 @@ include(${cmake_dir}/paths-config.cmake)
 ######################################
 # Things to be included for CMake
 set(CMAKE_MODULE_PATH ${cmake_dir}/cmake-modules)
-
 ######################################
 ## Define the project
 set(lib_name lib${project_name})
 project(${lib_name})
+set(CMAKE_EXPORT_COMPILE_COMMANDS true) #Always generate compile commands file
 
 ######################################
 # Versioning
@@ -65,15 +65,15 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 include_directories( ${Boost_INCLUDE_DIR} )
 
 ######################################
-## Define Binaries
-#Define the library we're building
-add_library(${project_name} SHARED ${sources} ${headers} ${public_headers})
-
-######################################
 ## Build flags
 set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 include(${cmake_dir}/cxxflags-config.cmake)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,-z,defs")
+
+######################################
+## Define Binaries
+#Define the library we're building
+add_library(${project_name} SHARED ${sources} ${headers} ${public_headers})
 
 #################################
 ## Linking
