@@ -1,4 +1,4 @@
-# Load the version definition script, or try to parse and SVN version out of git log
+# Load the version definition script
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/version.cmake")
    include(${CMAKE_CURRENT_SOURCE_DIR}/version.cmake)
 endif()
@@ -70,6 +70,3 @@ configure_file(${cmake_dir}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/${version_h
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${project_name}_version.h
                             PROPERTIES GENERATED TRUE
                             HEADER_FILE_ONLY TRUE)
-
-
-

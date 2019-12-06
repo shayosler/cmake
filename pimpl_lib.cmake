@@ -98,7 +98,7 @@ install(DIRECTORY ${project_name}
 
 ######################################
 # .deb package generation
-set(deps ${deps} "libboost-thread1.62.0, libboost-system1.62.0, libboost-program-options1.62.0, libboost-atomic1.62.0, libboost-filesystem1.62.0")
+set(deps ${deps} "libboost-thread1.62.0 | libboost-thread1.65.1, libboost-system1.62.0 | libboost-system1.65.1, libboost-program-options1.62.0 | libboost-program-options1.65.1, libboost-atomic1.62.0 | libboost-atomic1.65.1, libboost-filesystem1.62.0 | libboost-filesystem1.65.1")
 include(${cmake_dir}/cpack-config.cmake)
 
 ######################################
