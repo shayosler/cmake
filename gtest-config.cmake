@@ -18,6 +18,9 @@
 # TEST_LIBS		List of libraries the unit test executable should link against.
 #			Any libraries not linked against with target_link_libraries(...)
 #			need to be specified here
+# TEST_INCLUDE_DIRS		List of directories to add to the include path. Any
+#     Any directories not specified for the target with target_include_directories(...)
+#     need to be specified here
 # project_name		The test executable will be named ${project_name}_tests
 #
 # Examples:
@@ -32,8 +35,17 @@
 # If the unit tests use classes from openSEA we will need to link against openSEA
 # set(TEST_LIBS ${TEST_LIBS} opensea)
 
-#Get linked libs
+# Get linked libs
 get_target_property(PROJ_LIBS ${project_name} LINK_LIBRARIES)
+if(NOT PROJ_LIBS)
+  unset(PROJ_LIBS)
+endif(NOT PROJ_LIBS)
+
+# Get include directories for project
+get_target_property(PROJ_INCLUDE_DIRS ${project_name} INCLUDE_DIRECTORIES)
+if(NOT PROJ_INCLUDE_DIRS)
+  unset(PROJ_INCLUDE_DIRS)
+endif(NOT PROJ_INCLUDE_DIRS)
 
 #Add the google testing files.
 if(NOT DEFINED GTEST_ROOT)
@@ -51,8 +63,6 @@ add_subdirectory(${GTEST_ROOT} ${CMAKE_CURRENT_BINARY_DIR}/gtest)
 
 #######################
 # Unit Test Executable
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/tests)
-
 if(NOT DEFINED TEST_SOURCE_ROOT)
   set(TEST_SOURCE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/tests")
 endif(NOT DEFINED TEST_SOURCE_ROOT)
@@ -85,6 +95,9 @@ endif(NOT test_files)
 SET(TEST_EXECUTABLE ${project_name}_tests)
 add_executable(${TEST_EXECUTABLE} ${test_files})
 
-#Link against gtest, device libraries
+# Link against gtest, device libraries
+target_include_directories(${TEST_EXECUTABLE} PRIVATE
+  ${TEST_SOURCE_ROOT}
+  ${PROJ_INCLUDE_DIRS}
+  ${TEST_INCLUDE_DIRS})
 target_link_libraries(${TEST_EXECUTABLE} gtest gtest_main ${PROJ_LIBS} ${TEST_LIBS})
-

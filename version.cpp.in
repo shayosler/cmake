@@ -1,0 +1,7 @@
+#include <stdio.h>
+
+int main()
+{
+  printf("${PROJECT_VERSION}\n");
+  return 0;
+}
