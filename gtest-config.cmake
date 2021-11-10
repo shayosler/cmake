@@ -21,28 +21,28 @@
 # TEST_INCLUDE_DIRS		List of directories to add to the include path. Any
 #     Any directories not specified for the target with target_include_directories(...)
 #     need to be specified here
-# project_name		The test executable will be named ${project_name}_tests
+# project_name		The test executable will be named ${CMAKE_PROJECT_NAME}_tests
 #
 # Examples:
 # To add myclass.h and myclass.cpp from the application's src directory:
 # set(TEST_SOURCES ${TEST_SOURCES} myclass.cpp)
 # set(TEST_HEADERS ${TEST_HEADERS}  myclass.h)
 #
-# If the file ${project_name}.cpp contains a main() function it will need to be excluded 
+# If the file ${CMAKE_PROJECT_NAME}.cpp contains a main() function it will need to be excluded 
 # from the test executable. We can do that as follows:
-# set(TEST_EXCLUDES ${TEST_EXCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/src/${project_name}.cpp)
+# set(TEST_EXCLUDES ${TEST_EXCLUDES} ${CMAKE_CURRENT_SOURCE_DIR}/src/${CMAKE_PROJECT_NAME}.cpp)
 #
 # If the unit tests use classes from openSEA we will need to link against openSEA
 # set(TEST_LIBS ${TEST_LIBS} opensea)
 
 # Get linked libs
-get_target_property(PROJ_LIBS ${project_name} LINK_LIBRARIES)
+get_target_property(PROJ_LIBS ${CMAKE_PROJECT_NAME} LINK_LIBRARIES)
 if(NOT PROJ_LIBS)
   unset(PROJ_LIBS)
 endif(NOT PROJ_LIBS)
 
 # Get include directories for project
-get_target_property(PROJ_INCLUDE_DIRS ${project_name} INCLUDE_DIRECTORIES)
+get_target_property(PROJ_INCLUDE_DIRS ${CMAKE_PROJECT_NAME} INCLUDE_DIRECTORIES)
 if(NOT PROJ_INCLUDE_DIRS)
   unset(PROJ_INCLUDE_DIRS)
 endif(NOT PROJ_INCLUDE_DIRS)
@@ -92,7 +92,7 @@ if(NOT test_files)
 endif(NOT test_files)
 
 #Create test executable
-SET(TEST_EXECUTABLE ${project_name}_tests)
+SET(TEST_EXECUTABLE ${CMAKE_PROJECT_NAME}_tests)
 add_executable(${TEST_EXECUTABLE} ${test_files})
 
 # Link against gtest, device libraries

@@ -51,10 +51,10 @@ else()
   endif()
 endif()
 set(SEMANTIC_VERSION "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}")
-MESSAGE(STATUS "Building ${project_name} version ${PROJECT_VERSION}" )
+MESSAGE(STATUS "Building ${CMAKE_PROJECT_NAME} version ${PROJECT_VERSION}" )
 
-if(TARGET ${project_name})
-  get_target_property(target_type ${project_name} TYPE)
+if(TARGET ${CMAKE_PROJECT_NAME})
+  get_target_property(target_type ${CMAKE_PROJECT_NAME} TYPE)
   if(target_type STREQUAL "EXECUTABLE")
     set(APPLICATION_VERSION_MAJOR true)
     set(APPLICATION_VERSION_MINOR true)
@@ -63,8 +63,8 @@ if(TARGET ${project_name})
     set(APPLICATION_VERSION_FULL true)
   endif()
 else()
-  message(WARNING "No ${project_name} target defined. Version macros may be incomplete")
-endif(TARGET ${project_name})
+  message(WARNING "No ${CMAKE_PROJECT_NAME} target defined. Version macros may be incomplete")
+endif(TARGET ${CMAKE_PROJECT_NAME})
 
 # Set a default directory to place the version header in
 if(NOT DEFINED version_header_dir)
@@ -73,13 +73,13 @@ endif(NOT DEFINED version_header_dir)
 
 # Generate version header, replace - with _
 if(DEFINED project_name)
-  string(TOUPPER ${project_name} project_upper)
+  string(TOUPPER ${CMAKE_PROJECT_NAME} project_upper)
   string(REPLACE "-" "_" project_upper ${project_upper})
 else()
   set(project_name app)
   set(project_upper APP)
 endif()
-configure_file(${cmake_dir}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${project_name}_version.h)
-set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${project_name}_version.h
+configure_file(${cmake_dir}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${CMAKE_PROJECT_NAME}_version.h)
+set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${CMAKE_PROJECT_NAME}_version.h
                             PROPERTIES GENERATED TRUE
                             HEADER_FILE_ONLY TRUE)
