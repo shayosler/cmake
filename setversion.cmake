@@ -11,7 +11,7 @@ endif(NOT DEFINED PROJECT_VERSION_MAJOR)
 
 if(NOT DEFINED PROJECT_VERSION_MINOR)
   set(PROJECT_VERSION_MINOR "0")
-  message(WARNING "Project MINOR version undefined. Defaulting to ${PROJECT_VERSION_MINOR}") 
+  message(WARNING "Project MINOR version undefined. Defaulting to ${PROJECT_VERSION_MINOR}")
 endif(NOT DEFINED PROJECT_VERSION_MINOR)
 
 if(NOT DEFINED PROJECT_VERSION_PATCH)
@@ -72,13 +72,8 @@ if(NOT DEFINED version_header_dir)
 endif(NOT DEFINED version_header_dir)
 
 # Generate version header, replace - with _
-if(DEFINED project_name)
-  string(TOUPPER ${CMAKE_PROJECT_NAME} project_upper)
-  string(REPLACE "-" "_" project_upper ${project_upper})
-else()
-  set(project_name app)
-  set(project_upper APP)
-endif()
+string(TOUPPER ${CMAKE_PROJECT_NAME} project_upper)
+string(REPLACE "-" "_" project_upper ${project_upper})
 configure_file(${cmake_dir}/version.h.in ${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${CMAKE_PROJECT_NAME}_version.h)
 set_source_files_properties(${CMAKE_CURRENT_SOURCE_DIR}/${version_header_dir}/${CMAKE_PROJECT_NAME}_version.h
                             PROPERTIES GENERATED TRUE

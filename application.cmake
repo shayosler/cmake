@@ -19,14 +19,11 @@ include(${cmake_dir}/doc-config.cmake)
 
 ######################################
 # Define the project name
-set(CMAKE_EXPORT_COMPILE_COMMANDS true) 
+set(CMAKE_EXPORT_COMPILE_COMMANDS true)
 
 ######################################
 # Find external libraries
 # Find Boost
-
-# Set boost_components based on OS (windows requires zlib for compression)
-# This also allows us to specify extra boost_components in CMakeLists.txt
 set(boost_version 1.74.0)
 set(boost_components ${boost_components} thread system program_options atomic filesystem date_time chrono regex iostreams)
 find_package( Boost ${boost_version} COMPONENTS ${boost_components} REQUIRED )
@@ -87,7 +84,7 @@ set(libs ${libs} rt)
 set(libs ${libs} pthread)
 
 # link against sno
-set(libs ${libs} ${sno_LIBRARIES})
+set(libs ${libs} ${sno_core_LIBRARIES})
 
 # Link project
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE ${libs})
