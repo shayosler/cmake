@@ -37,8 +37,8 @@ find_package(sno_core REQUIRED)
 ######################################
 # Locations of files for this project
 if(NOT SNO_NO_GLOB_SRC)
-  file(GLOB_RECURSE glob_headers src/[a-z]*.h)
-  file(GLOB_RECURSE glob_sources src/[a-z]*.cpp)
+  file(GLOB_RECURSE glob_headers src/[A-Za-z]*.h)
+  file(GLOB_RECURSE glob_sources src/[A-Za-z]*.cpp)
 endif()
 set(sources ${sources} ${glob_sources})
 set(headers ${headers} ${glob_headers})
